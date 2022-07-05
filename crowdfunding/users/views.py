@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import CustomUser
 from .serializers import CustomUserSerializer
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
 
 
 class CustomUserList(APIView):
@@ -35,5 +37,12 @@ class CustomUserDetail(APIView):
         user = self.get_object(pk)
         serializer = CustomUserSerializer(user)
         return Response(serializer.data)
+
+
+class UserCreate(generics.CreateAPIView):
+    queryset =  CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+    permission_classes = (AllowAny, )
+
         
 
