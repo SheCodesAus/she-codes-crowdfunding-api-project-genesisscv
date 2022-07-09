@@ -11,6 +11,9 @@ from rest_framework import status, permissions
 from .permissions import IsOwnerReadOnly
 
 class PledgeList(APIView):
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly
+    ]
     def get(self, request):
         pledges = Pledge.objects.all()
         serializer = PledgeSerializer(pledges, many=True)
@@ -19,7 +22,7 @@ class PledgeList(APIView):
     def post(self, request):
         serializer = PledgeSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(supporter=request.user)
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED
